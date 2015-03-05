@@ -1,0 +1,18 @@
+# Mac OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# phpstorm
+.idea/
+
+# vim
+.*.sw[a-z]
+*.un~
+
+# Composer 
+/vendor
