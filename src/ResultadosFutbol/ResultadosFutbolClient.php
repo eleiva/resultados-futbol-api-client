@@ -1,6 +1,9 @@
 <?
 namespace ResultadosFutbol;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\TransferException;
+
 class ResultadosFutbolClient {
 
 	const API_ENDPOINT =  'http://www.resultados-futbol.com/scripts/api/api.php';
@@ -68,8 +71,7 @@ class ResultadosFutbolClient {
 	private function _make_api_call( $params = array() )
   {
     $ch = curl_init();
-    // Check if we must use Basic Auth or 1 legged oAuth, if SSL we use basic, if not we use OAuth 1.0a one-legged
-    $params['key']     = $this->_consumer_key."dsad";
+    $params['key']     = $this->_consumer_key;
 		$params['tz']			 = $this->_time_zone;
 		$params['format']	 = $this->_response_type;
 
@@ -79,23 +81,12 @@ class ResultadosFutbolClient {
       $paramString = null;
 		}
 
-    curl_setopt( $ch, CURLOPT_URL, $this->_api_url . $paramString );
-    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-    curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 30 );
-    curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );
-    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+		$client = new Client();
+		$response = $client->get($this->_api_url . $paramString);
+		if ( $response->getBody() == 'no-version' )
+			throw new TransferException;
 
-    $return = curl_exec( $ch );
-		$code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-
-    if (empty( $return ) || $return == 'no-version') {
-			$return = '{"errors":[{"code":"' . $code . '","message":"cURL HTTP error ' . $code . '"}]}';
-			if ( $this->_response_type != 'json' ){
-				$return = json_decode( $return );
-			}
-    }
-
-    return $return;
+    return $response;
   }
 
 }
