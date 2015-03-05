@@ -7,7 +7,7 @@ use ResultadosFutbol\ResultadosFutbolClient;
 class ResultadosFutbolTest extends \PHPUnit_Framework_TestCase
 {
 
-	private $key = '9d015e91dd9465caf217987d3b673ac1';
+	private $key = '<your-key>';
 
 	public function setUp(){
 		
